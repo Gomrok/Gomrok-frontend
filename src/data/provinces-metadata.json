@@ -1,0 +1,195 @@
+{
+  "projection": "Web Mercator, fit to viewBox 710×600",
+  "source": "geoBoundaries IRN-ADM1-17685810 / OpenStreetMap",
+  "license": "ODbL 1.0",
+  "sourceFeatureCount": 32,
+  "provinceCount": 31,
+  "provinces": [
+    {
+      "id": "mazandaran",
+      "name": "Mazandaran",
+      "fa": "مازندران",
+      "label": [314.61, 161.87]
+    },
+    {
+      "id": "north-khorasan",
+      "name": "North Khorasan",
+      "fa": "خراسان شمالی",
+      "label": [462.37, 121.79]
+    },
+    {
+      "id": "kerman",
+      "name": "Kerman",
+      "fa": "کرمان",
+      "label": [467.26, 412.17]
+    },
+    {
+      "id": "ilam",
+      "name": "Ilam",
+      "fa": "ایلام",
+      "label": [145.2, 285.28]
+    },
+    {
+      "id": "lorestan",
+      "name": "Lorestan",
+      "fa": "لرستان",
+      "label": [191.83, 272.43]
+    },
+    {
+      "id": "markazi",
+      "name": "Markazi",
+      "fa": "مرکزی",
+      "label": [239.22, 233.76]
+    },
+    {
+      "id": "chaharmahal-and-bakhtiari",
+      "name": "Chaharmahal and Bakhtiari",
+      "fa": "چهارمحال و بختیاری",
+      "label": [260.53, 325.01]
+    },
+    {
+      "id": "kermanshah",
+      "name": "Kermanshah",
+      "fa": "کرمانشاه",
+      "label": [137.49, 236.1]
+    },
+    {
+      "id": "hamadan",
+      "name": "Hamadan",
+      "fa": "همدان",
+      "label": [197.29, 218.93]
+    },
+    {
+      "id": "qazvin",
+      "name": "Qazvin",
+      "fa": "قزوین",
+      "label": [233.22, 173.04]
+    },
+    {
+      "id": "gilan",
+      "name": "Gilan",
+      "fa": "گیلان",
+      "label": [224.65, 127.87]
+    },
+    {
+      "id": "zanjan",
+      "name": "Zanjan",
+      "fa": "زنجان",
+      "label": [190.19, 157.2]
+    },
+    {
+      "id": "semnan",
+      "name": "Semnan",
+      "fa": "سمنان",
+      "label": [385.93, 198.15]
+    },
+    {
+      "id": "isfahan",
+      "name": "Isfahan",
+      "fa": "اصفهان",
+      "label": [318.36, 284.67]
+    },
+    {
+      "id": "kohgiluyeh-and-boyer-ahmad",
+      "name": "Kohgiluyeh and Boyer-Ahmad",
+      "fa": "کهگیلویه و بویراحمد",
+      "label": [266.64, 371.45]
+    },
+    {
+      "id": "kurdistan",
+      "name": "Kurdistan",
+      "fa": "کردستان",
+      "label": [146.66, 188.58]
+    },
+    {
+      "id": "west-azerbaijan",
+      "name": "West Azerbaijan",
+      "fa": "آذربایجان غربی",
+      "label": [95.46, 111.37]
+    },
+    {
+      "id": "fars",
+      "name": "Fars",
+      "fa": "فارس",
+      "label": [341.69, 428.43]
+    },
+    {
+      "id": "bushehr",
+      "name": "Bushehr",
+      "fa": "بوشهر",
+      "label": [283.57, 440.75]
+    },
+    {
+      "id": "ardabil",
+      "name": "Ardabil",
+      "fa": "اردبیل",
+      "label": [180.71, 80.76]
+    },
+    {
+      "id": "golestan",
+      "name": "Golestan",
+      "fa": "گلستان",
+      "label": [399.28, 125.12]
+    },
+    {
+      "id": "razavi-khorasan",
+      "name": "Razavi Khorasan",
+      "fa": "خراسان رضوی",
+      "label": [521.91, 188.41]
+    },
+    {
+      "id": "south-khorasan",
+      "name": "South Khorasan",
+      "fa": "خراسان جنوبی",
+      "label": [499.27, 292.33]
+    },
+    {
+      "id": "sistan-and-baluchestan",
+      "name": "Sistan and Baluchestan",
+      "fa": "سیستان و بلوچستان",
+      "label": [574.07, 471.91]
+    },
+    {
+      "id": "qom",
+      "name": "Qom",
+      "fa": "قم",
+      "label": [272.36, 226.18]
+    },
+    {
+      "id": "alborz",
+      "name": "Alborz",
+      "fa": "البرز",
+      "label": [265.41, 177.91]
+    },
+    {
+      "id": "east-azerbaijan",
+      "name": "East Azerbaijan",
+      "fa": "آذربایجان شرقی",
+      "label": [136.57, 98.31]
+    },
+    {
+      "id": "yazd",
+      "name": "Yazd",
+      "fa": "یزد",
+      "label": [383.89, 333.39]
+    },
+    {
+      "id": "hormozgan",
+      "name": "Hormozgan",
+      "fa": "هرمزگان",
+      "label": [442.61, 504.28]
+    },
+    {
+      "id": "khuzestan",
+      "name": "Khuzestan",
+      "fa": "خوزستان",
+      "label": [210.06, 346.07]
+    },
+    {
+      "id": "tehran",
+      "name": "Tehran",
+      "fa": "تهران",
+      "label": [294.4, 193.61]
+    }
+  ]
+}

@@ -1,0 +1,51 @@
+.icon-wrapper {
+  display: contents;
+}
+
+.select-wrap .icon {
+  position: absolute;
+  left: 12px;
+  top: 16px;
+  width: 15px;
+  height: 15px;
+  color: var(--secondary);
+  pointer-events: none;
+}
+
+.market-panel[data-filter="cargo"] .drivers-line,
+.market-panel[data-filter="drivers"] .cargo-line {
+  opacity: 0.15;
+}
+
+.concept-main {
+  width: min(1000px, calc(100% - 40px));
+  margin: 48px auto;
+}
+
+.map-state-message {
+  position: absolute;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  max-width: calc(100% - 24px);
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: rgb(255 255 255 / 94%);
+  color: var(--secondary);
+  font-size: 12px;
+  text-align: center;
+  box-shadow: 0 8px 24px rgb(16 42 67 / 8%);
+}
+
+.map-state-message button {
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: var(--blue);
+  font: inherit;
+  font-weight: 650;
+  cursor: pointer;
+}

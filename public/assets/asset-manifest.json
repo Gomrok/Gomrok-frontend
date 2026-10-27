@@ -1,0 +1,101 @@
+[
+  {
+    "path": "assets/brand/gomrok-original.jpg",
+    "source": "Gomrok_Figma_Codex_Design_Brief\\assets\\gomrok_original_logo.jpg",
+    "license": "Client supplied; unchanged",
+    "sha256": "813e5a2470ea9fd869f4de29084ee8464662d2b2a9d5c21a67ed378fe49d5df0"
+  },
+  {
+    "path": "assets/photos/port.jpg",
+    "author": "Diego F. Parra",
+    "source": "https://www.pexels.com/photo/aerial-view-of-containers-and-machinery-in-a-port-24244234/",
+    "download": "https://images.pexels.com/photos/24244234/pexels-photo-24244234.jpeg?auto=compress&cs=tinysrgb&w=1600",
+    "license": "Pexels License",
+    "licenseURL": "https://www.pexels.com/license/",
+    "changes": "Resized, re-encoded, metadata removed; CSS crops in design",
+    "sha256": "26d36d7be227e9433701e727e5dc5ef34bda68246d51323702d5104e288bc681"
+  },
+  {
+    "path": "assets/photos/warehouse.jpg",
+    "author": "Freek Wolsink",
+    "source": "https://www.pexels.com/photo/industrial-warehouse-with-stacked-cardboard-boxes-34221998/",
+    "download": "https://images.pexels.com/photos/34221998/pexels-photo-34221998.jpeg?auto=compress&cs=tinysrgb&w=1600",
+    "license": "Pexels License",
+    "licenseURL": "https://www.pexels.com/license/",
+    "changes": "Resized, re-encoded, metadata removed; CSS crops in design",
+    "sha256": "682644f5a6968e79ab0ee87769fd6c9f3b4e2327db47ac36c91f029b342a904e"
+  },
+  {
+    "path": "assets/photos/operations.jpg",
+    "author": "Daniel Andraski",
+    "source": "https://www.pexels.com/photo/person-with-clipboard-in-warehouse-12234107/",
+    "download": "https://images.pexels.com/photos/12234107/pexels-photo-12234107.jpeg?auto=compress&cs=tinysrgb&w=1600",
+    "license": "Pexels License",
+    "licenseURL": "https://www.pexels.com/license/",
+    "changes": "Resized, re-encoded, metadata removed; CSS crops in design",
+    "sha256": "3424c7512c3f3d52c5235a951889f9d4a9e1dca04413008e9c2f65c2ab63846a"
+  },
+  {
+    "path": "assets/photos/freight.jpg",
+    "author": "Ahmet Polat",
+    "source": "https://www.pexels.com/photo/a-trailer-truck-on-the-road-5410923/",
+    "download": "https://images.pexels.com/photos/5410923/pexels-photo-5410923.jpeg?auto=compress&cs=tinysrgb&w=1600",
+    "license": "Pexels License",
+    "licenseURL": "https://www.pexels.com/license/",
+    "changes": "Resized, re-encoded, metadata removed; CSS crops in design",
+    "sha256": "15fe223e159bf7788e4ae62934f45b8cfae8f0e4d4b5aa21c61e872db8ac4cae"
+  },
+  {
+    "path": "assets/icons/",
+    "source": "https://github.com/lucide-icons/lucide",
+    "commit": "03f11e2d6adc319ea21e9a1d5820a99cd3767257",
+    "license": "ISC",
+    "licenseURL": "https://lucide.dev/license",
+    "icons": [
+      "arrow-left",
+      "arrow-up-left",
+      "arrow-right",
+      "arrow-left-right",
+      "truck",
+      "ship",
+      "plane",
+      "map-pin",
+      "globe",
+      "package",
+      "boxes",
+      "file-text",
+      "sparkles",
+      "chevron-down",
+      "chevron-left",
+      "menu",
+      "x",
+      "send",
+      "check",
+      "circle-help",
+      "route",
+      "search",
+      "sliders-horizontal",
+      "plus",
+      "clock-3",
+      "move-up-right",
+      "arrow-up",
+      "circle-dot",
+      "navigation",
+      "download",
+      "external-link",
+      "info",
+      "loader-circle",
+      "message-square-text"
+    ]
+  },
+  {
+    "path": "assets/sources/iran-adm1.geojson",
+    "source": "https://www.geoboundaries.org/api/current/gbOpen/IRN/ADM1/",
+    "download": "https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/IRN/ADM1/geoBoundaries-IRN-ADM1_simplified.geojson",
+    "license": "Open Data Commons Open Database License 1.0",
+    "licenseURL": "https://www.openstreetmap.org/copyright",
+    "boundaryID": "IRN-ADM1-17685810",
+    "yearRepresented": "2017",
+    "sha256": "bed64f34847d707d6448d11afed74e87b594b37edd61c77622746c54efd3d970"
+  }
+]
