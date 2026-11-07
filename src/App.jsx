@@ -1,8 +1,12 @@
-import { useEffect } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
+import { WorkspaceProvider } from "./contexts/WorkspaceContext.jsx";
+import { ChatHistoryProvider } from "./contexts/ChatHistoryContext.jsx";
+import { AppErrorBoundary } from "./components/AppErrorBoundary.jsx";
 import { DialogProvider, useDialog } from "./components/DialogContext.jsx";
 import { MobileMenuProvider, useMobileMenu } from "./components/MobileMenu.jsx";
 import { HomePage } from "./pages/HomePage.jsx";
 import { ConceptPage } from "./pages/ConceptPage.jsx";
+const AccountPage = lazy(() => import("./pages/AccountPage.jsx"));
 
 const infoCopy = {
   login: [
@@ -87,30 +91,42 @@ const serviceCopy = {
 function AppContent() {
   const { openDialog, closeDialog } = useDialog();
   const { close: closeMenu } = useMobileMenu();
-  const params = new URLSearchParams(window.location.search);
+  const [location, setLocation] = useState(() => window.location.href);
+  useEffect(() => { const sync = () => setLocation(window.location.href); window.addEventListener("popstate", sync); return () => window.removeEventListener("popstate", sync); }, []);
+  const params = new URLSearchParams(new URL(location).search);
   const concept = ["chat", "quote", "customs"].includes(params.get("view"));
+  const account = ["login", "signup", "panel"].includes(params.get("view"));
 
   useEffect(() => {
-    document.body.classList.toggle("concept-body", concept);
-    document.body.dataset.page = concept ? "concept" : "home";
-    document.title = concept
+    document.body.classList.toggle("concept-body", concept || account);
+    document.body.dataset.page = account ? "account" : concept ? "concept" : "home";
+    document.title = account ? "گمرک‌دات‌کام | حساب و پنل نمونه" : concept
       ? "گمرک‌دات‌کام | مسیرهای نمونه"
       : "گمرک‌دات‌کام | از مبدأ تا مقصد";
     return () => {
       document.body.classList.remove("concept-body");
       delete document.body.dataset.page;
     };
-  }, [concept]);
+  }, [concept, account]);
 
   function onClick(event) {
     const target = event.target instanceof Element ? event.target : null;
     if (!target) return;
+    const link = target.closest("a[href]");
+    if (link && !event.defaultPrevented && !event.ctrlKey && !event.metaKey && !event.shiftKey && !link.target && !link.hasAttribute("download")) {
+      const destination = new URL(link.href, window.location.href);
+      if (destination.origin === window.location.origin && destination.pathname === window.location.pathname && destination.search !== window.location.search) {
+        event.preventDefault(); closeMenu(); window.history.pushState({}, "", destination.href); window.dispatchEvent(new PopStateEvent("popstate"));
+        if (!destination.hash) window.scrollTo({ top: 0, behavior: "instant" });
+      }
+    }
     if (target.closest("[data-close-dialog]")) closeDialog();
 
     const info = target.closest("[data-info]");
     if (info && infoCopy[info.dataset.info]) {
       closeMenu();
-      openDialog(...infoCopy[info.dataset.info]);
+      if (["login", "signup"].includes(info.dataset.info)) window.location.assign(`?view=${info.dataset.info}`);
+      else openDialog(...infoCopy[info.dataset.info]);
     }
 
     const article = target.closest("[data-article]");
@@ -149,17 +165,19 @@ function AppContent() {
 
   return (
     <div className="site-app" onClick={onClick}>
-      {concept ? <ConceptPage view={params.get("view")} /> : <HomePage />}
+      <Suspense fallback={<p className="resource-message" role="status">در حال آماده‌سازی صفحه…</p>}>
+        {account ? <AccountPage view={params.get("view")} role={params.get("role")} /> : concept ? <ConceptPage view={params.get("view")} /> : <HomePage />}
+      </Suspense>
     </div>
   );
 }
 
 export default function App() {
   return (
-    <DialogProvider>
+    <AppErrorBoundary><WorkspaceProvider><ChatHistoryProvider><DialogProvider>
       <MobileMenuProvider>
         <AppContent />
       </MobileMenuProvider>
-    </DialogProvider>
+    </DialogProvider></ChatHistoryProvider></WorkspaceProvider></AppErrorBoundary>
   );
 }

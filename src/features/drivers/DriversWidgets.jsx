@@ -1,6 +1,9 @@
+import { useEffect, useState } from "react";
 import { useDialog } from "../../components/DialogContext.jsx";
 import { Icon } from "../../components/Icon.jsx";
 import geography from "../../data/provinces-metadata.json";
+import { driverDemoData, filterSampleDrivers } from "../../services/drivers.js";
+export { driverDemoData };
 
 export const faNumber = new Intl.NumberFormat("fa-IR");
 
@@ -18,27 +21,6 @@ const vehicleOptions = [
   ["refrigerated", "یخچال‌دار"],
   ["van", "وانت"],
 ];
-
-const countOverrides = {
-  tehran: 18,
-  isfahan: 14,
-  fars: 12,
-  "razavi-khorasan": 16,
-  "east-azerbaijan": 11,
-  khuzestan: 13,
-};
-
-export function driverDemoData(id) {
-  const index = geography.provinces.findIndex((province) => province.id === id);
-  return {
-    count: countOverrides[id] || 7 + ((Math.max(0, index) * 3) % 12),
-    drivers: [
-      { id: 1, type: "flatbed", capacity: 24 },
-      { id: 2, type: "curtain", capacity: 22 },
-      { id: 3, type: "refrigerated", capacity: 18 },
-    ],
-  };
-}
 
 export function ProvinceSelect({ province, provinces, onChange }) {
   const sortedProvinces = [...provinces].sort((a, b) =>
@@ -151,12 +133,11 @@ export function IranMap({ province, provinces, paths, loading, onSelect }) {
   );
 }
 
-export function DriverList({ province, vehicle, onVehicleChange }) {
+export function DriverList({ province, vehicle, status = "all", onVehicleChange, onReset }) {
   const { openDialog } = useDialog();
-  const { drivers } = driverDemoData(province.id);
-  const filtered = drivers.filter(
-    (driver) => vehicle === "all" || driver.type === vehicle,
-  );
+  const [expanded, setExpanded] = useState(false);
+  useEffect(() => setExpanded(false), [province.id, vehicle, status]);
+  const filtered = filterSampleDrivers(province.id, vehicle, status);
 
   if (!filtered.length) {
     return (
@@ -164,7 +145,7 @@ export function DriverList({ province, vehicle, onVehicleChange }) {
         <Icon name="truck" />
         <h4>خودروی نمونه‌ای برای این فیلتر نیست</h4>
         <p>نوع خودرو را تغییر دهید و دوباره بررسی کنید.</p>
-        <button type="button" onClick={() => onVehicleChange("all")}>
+        <button type="button" onClick={() => onReset ? onReset() : onVehicleChange("all")}>
           نمایش همهٔ خودروها
         </button>
       </div>
@@ -173,7 +154,7 @@ export function DriverList({ province, vehicle, onVehicleChange }) {
 
   return (
     <>
-      {filtered.map((driver) => (
+      {(expanded ? filtered : filtered.slice(0, 4)).map((driver) => (
         <div className="driver-row" key={`${province.id}-${driver.id}`}>
           <span className="driver-icon">
             <Icon name="truck" />
@@ -187,6 +168,7 @@ export function DriverList({ province, vehicle, onVehicleChange }) {
               <i />
               <span>{faNumber.format(driver.capacity)} تن</span>
             </div>
+            <span className={`driver-status ${driver.status}`}>{driver.status === "ready" ? "آمادهٔ دریافت بار · نمونه" : "مشغول / دارای بار · نمونه"}</span>
           </div>
           <button
             type="button"
@@ -204,6 +186,7 @@ export function DriverList({ province, vehicle, onVehicleChange }) {
                     این پروفایل، نام، ظرفیت و موقعیت نمونهٔ طراحی است. شخص واقعی
                     یا موجودی تأییدشده معرفی نمی‌شود.
                   </p>
+                  <p>وضعیت نمونه: {driver.status === "ready" ? "آمادهٔ دریافت بار" : "مشغول / دارای بار"}</p>
                 </>,
               )
             }
@@ -212,6 +195,7 @@ export function DriverList({ province, vehicle, onVehicleChange }) {
           </button>
         </div>
       ))}
+      {filtered.length > 4 && <button className="driver-list-more" onClick={() => setExpanded((value) => !value)}>{expanded ? "نمایش خلاصهٔ فهرست" : `نمایش همهٔ ${faNumber.format(filtered.length)} خودروی نمونه`}</button>}
     </>
   );
 }

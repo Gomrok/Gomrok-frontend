@@ -5,6 +5,7 @@ import { DriversSection as DriversSectionMarkup } from "../../sections/HomeMarku
 export function DriversSection() {
   const [provinceId, setProvinceId] = useState("tehran");
   const [vehicle, setVehicle] = useState("all");
+  const [status, setStatus] = useState("all");
   const [paths, setPaths] = useState(null);
   const [mapState, setMapState] = useState("idle");
   const sectionRef = useRef(null);
@@ -46,6 +47,8 @@ export function DriversSection() {
       province={province}
       provinces={geography.provinces}
       vehicle={vehicle}
+      status={status}
+      onStatusChange={setStatus}
       paths={paths}
       mapState={mapState}
       sectionRef={sectionRef}

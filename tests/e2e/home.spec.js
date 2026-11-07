@@ -1,0 +1,141 @@
+import { test, expect, combo, routeForm } from "./fixtures.js";
+import { filterSampleDrivers } from "../../src/services/drivers.js";
+test("header searches HS codes, opens details, and handles no results and Escape", async ({ page }) => {
+  await page.goto("/");
+  const search = page.locator("#header-product-search");
+  await search.fill("۸۴۷۱");
+  await expect(page.locator("#header-product-search-list").getByRole("option")).toHaveCount(1);
+  await search.press("ArrowDown"); await search.press("Enter");
+  await expect(page.getByRole("dialog")).toBeVisible();
+  await expect(page.getByRole("dialog")).toContainText("رایانه و تجهیزات پردازش");
+  await expect(page.getByRole("dialog")).toContainText("8471");
+  await page.getByRole("button", { name: "بستن پنجره" }).click();
+  await search.fill("کالایی که در فهرست نیست");
+  await expect(page.getByText("موردی در فهرست فعلی پیدا نشد.")).toBeVisible();
+  await search.press("Escape"); await expect(search).toHaveAttribute("aria-expanded", "false");
+});
+test("route inputs start empty and country selection is keyboard accessible", async ({ page }) => {
+  await page.goto("/");
+  for (const id of ["origin-country", "origin-city", "destination-country", "destination-city"]) await expect(page.locator(`#${id}`)).toHaveValue("");
+  await expect(page.locator("#origin-city")).toBeDisabled();
+  const input = page.locator("#origin-country");
+  await input.fill("ایر"); await input.press("ArrowDown"); await input.press("Enter");
+  await expect(input).toHaveValue("ایران"); await expect(page.locator("#origin-city")).toBeEnabled();
+  await combo(page, "origin-city", "تهر", "تهران");
+  await combo(page, "origin-country", "چین", "چین");
+  await expect(page.locator("#origin-city")).toHaveValue("");
+  await expect(page.getByText("۵ کشور و ۱۴ شهر", { exact: false })).toBeVisible();
+});
+test("swap preserves country-city relationships and unknown typed values are rejected", async ({ page }) => {
+  await page.goto("/"); await routeForm(page);
+  await page.getByRole("button", { name: "جابه‌جایی مبدأ و مقصد" }).click();
+  await expect(page.locator("#origin-city")).toHaveValue("استانبول");
+  await expect(page.locator("#destination-city")).toHaveValue("تهران");
+  await page.locator("#origin-country").fill("کشور ناموجود");
+  await expect(page.getByText("موردی در فهرست فعلی پیدا نشد.")).toBeVisible();
+  await page.locator("#origin-country").press("Escape");
+  await page.getByRole("button", { name: "استعلام نرخ حمل", exact: true }).click();
+  await expect(page.locator("#origin-country")).toHaveAttribute("aria-invalid", "true");
+  await expect(page.locator("#origin-city")).toHaveValue("");
+});
+test("rail, scope, cargo, route name, review and local draft work end to end", async ({ page }) => {
+  await page.goto("/"); await routeForm(page);
+  await page.getByRole("button", { name: "ریلی", exact: true }).click();
+  await page.locator("#vehicle-type").selectOption("rail-covered");
+  await page.locator("#route-name").fill("مسیر نمایشگاهی");
+  await combo(page, "cargo-type", "صنعتی", "قطعات صنعتی");
+  await page.locator("#cargo-weight").fill("۲۴٬۰۰۰");
+  await page.getByRole("button", { name: "جزئیات بیشتر", exact: false }).click();
+  await page.locator("#pickup-place").fill("انبار آزمایشی");
+  await page.getByRole("button", { name: "استعلام نرخ حمل", exact: true }).click();
+  await expect(page).toHaveURL(/view=quote/);
+  await expect(page.locator(".request-summary")).toContainText("ریلی · واگن مسقف");
+  await expect(page.locator(".request-summary")).toContainText("ترانزیت");
+  await expect(page.locator(".request-summary")).toContainText("مسیر نمایشگاهی");
+  await expect(page.locator("#request-weight")).toHaveValue("24000");
+  await page.locator("#request-package").selectOption({ label: "پالت" });
+  await page.locator("#request-note").fill("بارگیری با هماهنگی آزمایشی");
+  await page.getByRole("button", { name: "مرور مشخصات درخواست" }).click();
+  await expect(page.getByRole("region", { name: "مرور مشخصات درخواست" })).toContainText("قطعات صنعتی");
+  await page.getByRole("button", { name: "ذخیرهٔ پیش‌نویس و دیدن پنل نمونه" }).click();
+  await expect(page).toHaveURL(/view=panel&role=shipper/);
+  await page.getByRole("button", { name: "پیش‌نویس درخواست‌ها", exact: true }).click();
+  await expect(page.locator(".request-draft-card")).toContainText("مسیر نمایشگاهی");
+  await expect(page.locator(".request-draft-card")).toContainText("تهران ← استانبول");
+});
+test("mode changes reset vehicles and grouped Persian weight validates", async ({ page }) => {
+  await page.goto("/"); await routeForm(page);
+  await page.locator("#vehicle-type").selectOption("flatbed");
+  await page.getByRole("button", { name: "ریلی", exact: true }).click();
+  await expect(page.locator("#vehicle-type")).toHaveValue("");
+  await page.locator("#cargo-weight").fill("۱۲,۳");
+  await page.getByRole("button", { name: "استعلام نرخ حمل", exact: true }).click();
+  await expect(page.locator("#cargo-weight")).toHaveAttribute("aria-invalid", "true");
+  await page.locator("#cargo-weight").fill("۱۲٬۳۰۰٫۵");
+  await page.getByRole("button", { name: "استعلام نرخ حمل", exact: true }).click();
+  await expect(page).toHaveURL(/view=quote/);
+  await page.getByRole("link", { name: "اصلاح مسیر و شیوهٔ حمل" }).click();
+  await expect(page.locator("#origin-city")).toHaveValue("تهران");
+  await expect(page.getByRole("button", { name: "ریلی", exact: true })).toHaveAttribute("aria-pressed", "true");
+});
+test("market cards, ranges, statuses and accessible data table agree", async ({ page }) => {
+  await page.goto("/#market");
+  await expect(page.locator(".market-status-card")).toHaveCount(4);
+  await expect(page.locator('[data-metric="available"] strong')).toContainText("۱۲۸");
+  await page.locator("#market-range").selectOption("week");
+  await expect(page.locator('[data-metric="available"] strong')).toContainText("۹۴");
+  await page.getByRole("group", { name: "فیلتر آمار بازار" }).getByRole("button", { name: "رانندگان", exact: true }).click();
+  await expect(page.locator(".market-status-card")).toHaveCount(2);
+  await page.locator("#market-status").selectOption("busy");
+  await expect(page.locator(".market-status-card")).toHaveCount(1);
+  await page.getByText("جدول داده‌های نمودار", { exact: true }).click();
+  await expect(page.locator(".chart-data tbody tr")).toHaveCount(9);
+});
+test("map pointer selection has no rectangular outline and keyboard retains shaped focus", async ({ page }) => {
+  await page.goto("/#drivers");
+  const path = page.locator('path[data-province="isfahan"]');
+  await expect(path).toBeVisible();
+  await path.scrollIntoViewIfNeeded();
+  const point = await path.evaluate((node) => {
+    const box = node.getBBox();
+    for (let y = 0.3; y < 0.9; y += 0.1) for (let x = 0.3; x < 0.9; x += 0.1) {
+      const point = new DOMPoint(box.x + box.width * x, box.y + box.height * y);
+      if (node.isPointInFill(point)) { const screen = point.matrixTransform(node.getScreenCTM()); return { x: screen.x, y: screen.y }; }
+    }
+    throw Error("Interior point not found");
+  });
+  await page.mouse.click(point.x, point.y);
+  await expect(path).toHaveAttribute("aria-pressed", "true");
+  expect(await path.evaluate((node) => getComputedStyle(node).outlineStyle)).toBe("none");
+  await page.keyboard.press("Tab");
+  const fars = page.locator('path[data-province="fars"]'); await fars.focus(); await fars.press("Enter");
+  await expect(fars).toHaveAttribute("aria-pressed", "true");
+  expect(Number.parseFloat(await fars.evaluate((node) => getComputedStyle(node).strokeWidth))).toBeGreaterThanOrEqual(3);
+  await expect(page.locator("#province-select")).toHaveValue("fars");
+  await page.locator("#map-vehicle").selectOption("van");
+  await page.locator("#map-status").selectOption("ready");
+  const expected = filterSampleDrivers("fars", "van", "ready").length;
+  await expect(page.locator(".driver-row")).toHaveCount(Math.min(4, expected));
+  await expect(page.locator(".province-title p strong")).toHaveText(new Intl.NumberFormat("fa-IR").format(expected));
+});
+test("customs form preserves its review flow and focuses invalid value correctly", async ({ page }) => {
+  await page.goto("/#customs");
+  await page.locator("#goods-name").fill("قطعهٔ نمونه");
+  await page.locator("#hs-code").fill("۸۴۷۹");
+  await page.locator("#customs-office").selectOption({ label: "تهران" });
+  await page.getByRole("button", { name: "شروع استعلام هزینه ترخیص" }).click();
+  await expect(page).toHaveURL(/view=customs/);
+  await page.locator("#customs-value").fill("-2");
+  await page.getByRole("button", { name: "مرور اطلاعات پرونده" }).click();
+  await expect(page.locator("#customs-value")).toBeFocused();
+  await page.locator("#customs-value").fill("100");
+  await page.getByRole("button", { name: "مرور اطلاعات پرونده" }).click();
+  await expect(page.getByRole("dialog")).toContainText("مشخصات پرونده آمادهٔ مرور است");
+});
+test("header result hands the selected sample commodity to customs", async ({ page }) => {
+  await page.goto("/"); await page.locator("#header-product-search").fill("گندم");
+  await page.locator("#header-product-search-list").getByRole("option").click();
+  await page.getByRole("dialog").getByRole("link", { name: "مرور اطلاعات کالا" }).click();
+  await expect(page.locator("#customs-goods")).toHaveValue("گندم");
+  await expect(page.locator("#customs-hs")).toHaveValue("1001");
+});

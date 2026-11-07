@@ -1,11 +1,10 @@
 import { createContext, useContext, useEffect, useRef, useState } from "react";
-import { useDialog } from "./DialogContext.jsx";
 import { Icon } from "./Icon.jsx";
+import { HOME_SECTION_ORDER } from "../config/platform.js";
 
 const MobileMenuContext = createContext(null);
 
 export function MobileMenuProvider({ children }) {
-  const { openDialog } = useDialog();
   const dialogRef = useRef(null);
   const [open, setOpen] = useState(false);
 
@@ -23,6 +22,7 @@ export function MobileMenuProvider({ children }) {
       {children}
       <dialog
         id="mobile-menu"
+        aria-label="منوی ناوبری"
         ref={dialogRef}
         className="mobile-menu"
         onClose={close}
@@ -45,12 +45,8 @@ export function MobileMenuProvider({ children }) {
           <a href="#quote" onClick={close}>
             استعلام حمل <Icon name="arrow-left" />
           </a>
-          <a href="#customs" onClick={close}>
-            ترخیص کالا
-          </a>
-          <a href="#ai" onClick={close}>
-            هوش مصنوعی
-          </a>
+          {HOME_SECTION_ORDER.map((id) => <a href={`#${id}`} key={id} onClick={close}>{id === "ai" ? "هوش مصنوعی" : "ترخیص کالا"}</a>)}
+          <a href="#market" onClick={close}>نبض بازار</a>
           <a href="#drivers" onClick={close}>
             رانندگان
           </a>
@@ -58,19 +54,14 @@ export function MobileMenuProvider({ children }) {
             مقالات
           </a>
         </nav>
-        <button
+        <a
           className="button button-primary"
-          type="button"
-          onClick={() => {
-            close();
-            openDialog(
-              "ورود به حساب",
-              "این نما، پیش‌نمایش مسیر ورود است. ورود واقعی و دریافت اطلاعات حساب در این نمونهٔ طراحی فعال نیست.",
-            );
-          }}
+          href="?view=login"
+          onClick={close}
         >
           ورود به حساب
-        </button>
+        </a>
+        <a className="button button-outline" href="?view=signup" onClick={close}>انتخاب نقش و ثبت‌نام</a>
       </dialog>
     </MobileMenuContext.Provider>
   );

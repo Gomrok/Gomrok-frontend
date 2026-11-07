@@ -1,15 +1,14 @@
 import { useEffect, useRef, useState } from "react";
 import { Icon } from "../../components/Icon.jsx";
 
-export function ChatComposer({ onSend, busy = false }) {
+export function ChatComposer({ onSend, busy = false, blocked = false }) {
   const [value, setValue] = useState("");
 
   function submit(event) {
     event.preventDefault();
     const question = value.trim().slice(0, 500);
-    if (!question || busy) return;
-    setValue("");
-    onSend(question);
+    if (!question || busy || blocked) return;
+    if (onSend(question)) setValue("");
   }
 
   return (
@@ -24,10 +23,11 @@ export function ChatComposer({ onSend, busy = false }) {
           placeholder="سؤال خود را بنویسید…"
           maxLength={500}
           required
+          disabled={blocked}
           value={value}
           onChange={(event) => setValue(event.target.value)}
           onKeyDown={(event) => {
-            if (event.key === "Enter" && !event.shiftKey) {
+            if (event.key === "Enter" && !event.shiftKey && !event.nativeEvent.isComposing) {
               event.preventDefault();
               event.currentTarget.form?.requestSubmit();
             }
@@ -37,7 +37,7 @@ export function ChatComposer({ onSend, busy = false }) {
           type="submit"
           className="send-square"
           aria-label="ارسال سؤال نمونه"
-          disabled={busy || !value.trim()}
+          disabled={busy || blocked || !value.trim()}
         >
           <Icon name="arrow-up" />
         </button>
@@ -50,7 +50,7 @@ export function ChatComposer({ onSend, busy = false }) {
   );
 }
 
-export function ChatMessages({ messages = [], busy = false }) {
+export function ChatMessages({ messages = [], busy = false, onReferral }) {
   const threadRef = useRef(null);
 
   useEffect(() => {
@@ -104,12 +104,13 @@ export function ChatMessages({ messages = [], busy = false }) {
           </span>
           <div>
             <p>{message.text}</p>
-            {message.role === "assistant" && !message.pending && (
+            {message.role === "assistant" && !message.pending && !message.error && (
               <div className="chat-source">
                 <Icon name="info" />
                 <span>پاسخ نمایشی؛ این گفتگو به مدل هوش مصنوعی متصل نیست.</span>
               </div>
             )}
+            {message.role === "assistant" && !message.pending && !message.error && <div className="ai-followup-actions"><button className="text-link" onClick={() => onReferral?.(message)}>شروع درخواست حمل از این گفتگو</button><a className="text-link" href="?view=signup">انتخاب نقش و ثبت‌نام</a></div>}
           </div>
         </div>
       ))}

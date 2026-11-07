@@ -1,0 +1,26 @@
+{
+  "files": [
+    {
+      "file": "vazirmatn-arabic-wght-normal.woff2",
+      "bytes": 46308,
+      "sha256": "84A382E46C30FB4F73D0E3800C16D0AF15888E2731E57FA5F93E2C29A2C6A957"
+    },
+    {
+      "file": "vazirmatn-latin-ext-wght-normal.woff2",
+      "bytes": 21860,
+      "sha256": "21529FACFD236F6BE527E4353623BDB889C96A7EBB7DB1E148E28406BE0EA004"
+    },
+    {
+      "file": "vazirmatn-latin-wght-normal.woff2",
+      "bytes": 34524,
+      "sha256": "D29C041CD4294AF893CF3C01DFAB6D47202C667AB55D702F68782599918C651D"
+    }
+  ],
+  "distribution": "@fontsource-variable/vazirmatn@5.3.0",
+  "licenseFile": "assets/fonts/OFL.txt",
+  "changes": "Self hosted variable WOFF2 subsets; CSS family alias retained as Vazirmatn",
+  "family": "Vazirmatn",
+  "license": "SIL Open Font License 1.1",
+  "source": "https://registry.npmjs.org/@fontsource-variable/vazirmatn/-/vazirmatn-5.3.0.tgz",
+  "authorRepository": "https://github.com/rastikerdar/vazirmatn"
+}

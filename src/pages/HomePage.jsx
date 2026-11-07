@@ -1,14 +1,16 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import {
   AISection,
   ArticlesSection,
   CustomsSection,
   FooterSection,
   HeaderSection,
+  ProductSearchSection,
   HeroSection,
-  MarketSection as MarketMarkup,
 } from "../sections/HomeMarkup.jsx";
 import { DriversSection } from "../features/drivers/DriversSection.jsx";
+import { MarketDashboard } from "../features/market/MarketDashboard.jsx";
+import { HOME_SECTION_ORDER } from "../config/platform.js";
 
 function Header() {
   useEffect(() => {
@@ -54,12 +56,22 @@ function Header() {
   return <HeaderSection />;
 }
 
-function MarketSection() {
-  const [filter, setFilter] = useState("all");
-  return <MarketMarkup filter={filter} onFilterChange={setFilter} />;
-}
-
 export function HomePage() {
+  useEffect(() => {
+    let disposed = false;
+    let userMoved = false;
+    const markInteraction = () => { userMoved = true; };
+    const frames = [];
+    const alignHash = () => {
+      let id;
+      try { id = decodeURIComponent(window.location.hash.slice(1)); } catch { return; }
+      if (id) document.getElementById(id)?.scrollIntoView({ behavior: "instant", block: "start" });
+    };
+    frames.push(window.requestAnimationFrame(alignHash));
+    for (const name of ["wheel", "touchstart", "keydown"]) window.addEventListener(name, markInteraction, { passive: true });
+    document.fonts.ready.then(() => { if (!disposed && !userMoved) frames.push(window.requestAnimationFrame(() => frames.push(window.requestAnimationFrame(() => { if (!disposed && !userMoved) alignHash(); })))); });
+    return () => { disposed = true; frames.forEach(window.cancelAnimationFrame); for (const name of ["wheel", "touchstart", "keydown"]) window.removeEventListener(name, markInteraction); };
+  }, []);
   return (
     <>
       <a className="skip-link" href="#main">
@@ -67,10 +79,10 @@ export function HomePage() {
       </a>
       <Header />
       <main id="main">
+        <ProductSearchSection />
         <HeroSection />
-        <AISection />
-        <CustomsSection />
-        <MarketSection />
+        {HOME_SECTION_ORDER.map((id, index) => id === "ai" ? <AISection key={id} number={new Intl.NumberFormat("fa-IR", { minimumIntegerDigits: 2 }).format(index + 1)} /> : <CustomsSection key={id} number={new Intl.NumberFormat("fa-IR", { minimumIntegerDigits: 2 }).format(index + 1)} />)}
+        <MarketDashboard />
         <DriversSection />
         <ArticlesSection />
       </main>

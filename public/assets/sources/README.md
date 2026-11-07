@@ -27,4 +27,4 @@ The source database and derived geographic data retain the **Open Data Commons O
 
 ## Font
 
-Vazirmatn is referenced from Google Fonts for preview rendering. No font binary is redistributed. The [official Vazirmatn repository](https://github.com/rastikerdar/vazirmatn) is the source for local font installation if required by Figma.
+Vazirmatn is now self-hosted in `src/assets/fonts/` using variable WOFF2 subsets from the pinned `@fontsource-variable/vazirmatn@5.3.0` distribution. Its SIL Open Font License 1.1 is included at `assets/fonts/OFL.txt`; file hashes and provenance are in `vazirmatn-font.json`. The [official Vazirmatn repository](https://github.com/rastikerdar/vazirmatn) remains the author source. The CSS family name stays `Vazirmatn`; the homepage no longer requests Google Fonts.

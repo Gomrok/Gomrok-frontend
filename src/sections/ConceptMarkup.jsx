@@ -37,6 +37,19 @@ export function ChatSection({
   messages,
   onSend,
   busy,
+  used,
+  limit,
+  blocked,
+  error,
+  onRetry,
+  onReferral,
+  histories = [],
+  activeHistory,
+  onSelectHistory,
+  onRemoveHistory,
+  rememberHistory,
+  onRememberHistory,
+  historyStorageError,
 }) {
   return (
     <section data-concept="chat" data-figma="AI Chat/Entry">
@@ -57,13 +70,11 @@ export function ChatSection({
             <Icon name="plus" />
             گفت‌وگوی تازه
           </button>
-          <span className="chat-sidebar-title">گفت‌وگوی نمونه</span>
-          <button
-            className="history-item"
-            data-chat-question="برای ترخیص کالا از کجا شروع کنم؟"
-          >
-            برای ترخیص کالا از کجا شروع کنم؟
-          </button>
+          <span className="chat-sidebar-title">تاریخچهٔ گفتگوهای همین صفحه</span>
+          <ul className="chat-history-list">{histories.map((item) => <li key={item.id}><button className="history-item" aria-current={activeHistory === item.id ? "true" : undefined} onClick={() => onSelectHistory(item.id)}>{item.title}</button><button className="chat-history-remove" aria-label={`حذف گفتگوی ${item.title}`} onClick={() => onRemoveHistory(item.id)}><Icon name="x" /></button></li>)}</ul>
+          <label className="check-field chat-remember"><input type="checkbox" checked={Boolean(rememberHistory)} onChange={(event) => onRememberHistory(event.target.checked)} />نگه‌داری موقت تاریخچه در همین تب</label>
+          <p className="field-hint">{rememberHistory ? "با انتخاب شما، متن گفتگو تا بستن همین تب نگه‌داری می‌شود. با برداشتن تیک، نسخهٔ ذخیره‌شده پاک می‌شود." : "متن گفتگو ذخیره نمی‌شود؛ با بازخوانی کامل صفحه از دست می‌رود."}</p>
+          {historyStorageError && <p className="field-error" role="alert">ذخیرهٔ تاریخچه در این مرورگر ممکن نیست.</p>}
           <p className="chat-sidebar-note">
             پاسخ‌های این نمونه برای بررسی طراحی هستند و جایگزین بررسی تخصصی یا
             نظر مرجع رسمی نیستند.
@@ -74,8 +85,11 @@ export function ChatSection({
             <h2>یک سؤال، یک مسیر روشن‌تر</h2>
             <span className="demo-badge">نسخهٔ طراحی</span>
           </div>
-          <ChatMessages messages={messages} busy={busy} />
-          <ChatComposer onSend={onSend} busy={busy} />
+          <ChatMessages messages={messages} busy={busy} onReferral={onReferral} />
+          <div className="chat-quota" role="status">سهمیهٔ مهمان: {new Intl.NumberFormat("fa-IR").format(Math.max(0, limit - used))} تعامل نمونه از {new Intl.NumberFormat("fa-IR").format(limit)} باقی مانده است.</div>
+          {error && <div className="chat-error" role="alert"><p>{error}</p><button className="button button-outline" onClick={onRetry} disabled={busy || blocked}>تلاش دوباره</button></div>}
+          {blocked && <div className="chat-limit-notice"><strong>سهمیهٔ آزمایشی مهمان پایان یافته است.</strong><p>برای آشنایی با مسیر ادامه، ثبت‌نام را ببینید. استفادهٔ بیشتر پس از فعال‌شدن حساب و سرویس اصلی ممکن خواهد بود.</p><a className="button button-primary" href="?view=signup">ثبت‌نام برای ادامه</a></div>}
+          <ChatComposer onSend={onSend} busy={busy} blocked={blocked} />
         </div>
       </div>
     </section>
@@ -83,6 +97,7 @@ export function ChatSection({
 }
 
 export function QuoteConcept({ summary }) {
+  if (!summary.hasRoute) return <section className="concept-surface resource-message"><h1>هنوز مسیری انتخاب نشده است</h1><p>کشور و شهرهای مبدأ و مقصد و دامنهٔ حمل را مشخص کنید.</p><a className="button button-primary" href="./#quote">انتخاب مسیر حمل</a></section>;
   return (
     <section data-concept="quote" data-figma="Quote/NextStep">
       <div className="concept-banner">
@@ -140,6 +155,8 @@ export function QuoteConcept({ summary }) {
           <p className="summary-footnote">
             هر نرخ پس از بررسی کامل مشخصات و شرایط درخواست معنا پیدا می‌کند.
           </p>
+          <dl className="summary-metadata"><dt>دامنهٔ حمل</dt><dd>{summary.scopeLabel}</dd><dt>نام مسیر</dt><dd>{summary.routeName || "بدون نام"}</dd>{summary.pickup && <><dt>محل بارگیری</dt><dd>{summary.pickup}</dd></>}{summary.dropoff && <><dt>محل تخلیه</dt><dd>{summary.dropoff}</dd></>}{summary.ready && <><dt>آماده‌سازی</dt><dd>{summary.ready}</dd></>}<dt>منبع ارجاع</dt><dd>{summary.referralSource === "ai" ? "گفت‌وگوی نمونه" : "مستقیم"}</dd></dl>
+          <a className="text-link" href="?edit=quote#quote">اصلاح مسیر و شیوهٔ حمل</a>
         </aside>
       </div>
     </section>
@@ -198,7 +215,7 @@ export function CustomsConcept({ summary }) {
 export function ConceptFooter() {
   return (
     <p className="concept-footer">
-      پیش‌نمایش طراحی گمرک‌دات‌کام · اطلاعات در حافظهٔ موقت همین صفحه می‌مانند.
+      پیش‌نمایش گمرک‌دات‌کام · پیش‌نویس‌ها فقط در حافظهٔ موقت همین تب نگه‌داری می‌شوند.
     </p>
   );
 }

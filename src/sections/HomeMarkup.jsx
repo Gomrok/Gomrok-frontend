@@ -1,11 +1,9 @@
 import { Icon } from "../components/Icon.jsx";
 import { MobileMenuToggle } from "../components/MobileMenu.jsx";
 import { QuoteForm } from "../features/quote/QuoteForm.jsx";
+import { ProductSearch } from "../features/catalog/ProductSearch.jsx";
+import { HOME_SECTION_ORDER } from "../config/platform.js";
 import { CustomsForm } from "../features/customs/CustomsForm.jsx";
-import {
-  MarketFilters,
-  MarketLead,
-} from "../features/market/MarketControls.jsx";
 import {
   DriverList,
   IranMap,
@@ -17,7 +15,7 @@ import {
 
 export function HeaderSection() {
   return (
-    <header className="site-header" data-figma="Header/Top">
+    <header className="site-header home-header" data-figma="Header/Top">
       <div className="container header-inner">
         <a
           href="./"
@@ -36,21 +34,21 @@ export function HeaderSection() {
             صفحه اصلی
           </a>
           <a href="#quote">استعلام حمل</a>
-          <a href="#customs">ترخیص کالا</a>
-          <a href="#ai">هوش مصنوعی</a>
+          {HOME_SECTION_ORDER.map((id) => <a key={id} href={`#${id}`}>{id === "ai" ? "هوش مصنوعی" : "ترخیص کالا"}</a>)}
+          <a href="#market">نبض بازار</a>
           <a href="#drivers">رانندگان</a>
           <a href="#articles">مقالات</a>
         </nav>
         <div className="header-actions">
-          <button className="text-button login-link" data-info="login">
+          <a className="text-button login-link" href="?view=login">
             ورود
-          </button>
-          <button
+          </a>
+          <a
             className="button button-small button-outline"
-            data-info="signup"
+            href="?view=signup"
           >
             ثبت‌نام <Icon name="arrow-up-left" />
-          </button>
+          </a>
           <MobileMenuToggle
             className="icon-button menu-toggle"
             aria-label="باز کردن منو"
@@ -59,6 +57,14 @@ export function HeaderSection() {
         </div>
       </div>
     </header>
+  );
+}
+
+export function ProductSearchSection() {
+  return (
+    <section className="product-search-section" aria-label="جستجوی کالا و کد تعرفه">
+      <div className="container"><ProductSearch /></div>
+    </section>
   );
 }
 
@@ -193,7 +199,7 @@ export function HeroSection() {
   );
 }
 
-export function AISection() {
+export function AISection({ number = "۰۱" }) {
   return (
     <section
       className="section ai-section"
@@ -203,7 +209,7 @@ export function AISection() {
       <div className="container ai-layout">
         <div className="section-copy">
           <p className="eyebrow">
-            <span className="section-number">۰۱</span>یک همراه برای سؤال‌های شما
+            <span className="section-number">{number}</span>یک همراه برای سؤال‌های شما
           </p>
           <h2>
             پیش از هر تصمیم،
@@ -272,7 +278,7 @@ export function AISection() {
   );
 }
 
-export function CustomsSection() {
+export function CustomsSection({ number = "۰۲" }) {
   return (
     <section
       className="section customs-section"
@@ -283,7 +289,7 @@ export function CustomsSection() {
         <div className="section-heading">
           <div>
             <p className="eyebrow">
-              <span className="section-number">۰۲</span>ابزارهای تخصصی تجارت
+              <span className="section-number">{number}</span>ابزارهای تخصصی تجارت
             </p>
             <h2>استعلام و خدمات ترخیص کالا</h2>
             <p>ابزارهای تخصصی برای برآورد هزینه‌ها و مدیریت فرآیند ترخیص.</p>
@@ -358,159 +364,6 @@ export function CustomsSection() {
   );
 }
 
-export function MarketSection({
-  filter,
-  onFilterChange,
-  province,
-  onProvinceChange,
-  vehicle,
-  onVehicleChange,
-  summary,
-  messages,
-  onSend,
-  busy,
-}) {
-  return (
-    <section
-      className="section market-section"
-      id="market"
-      data-figma="Section/MarketActivity"
-    >
-      <div className="container">
-        <div className="section-heading">
-          <div>
-            <p className="eyebrow">
-              <span className="section-number">۰۳</span>عرضه و تقاضا در یک نگاه
-            </p>
-            <h2>نبض بازار حمل‌ونقل</h2>
-            <p>نمایی از عرضه و تقاضای بار و ناوگان در سامانه</p>
-          </div>
-          <div className="market-heading-controls">
-            <span className="demo-badge">داده نمایشی</span>
-            <MarketFilters filter={filter} onChange={onFilterChange} />
-          </div>
-        </div>
-        <div className="market-panel" data-filter={filter}>
-          <MarketLead filter={filter} />
-          <div className="market-chart">
-            <div className="chart-heading">
-              <span>الگوی نمونهٔ فعالیت</span>
-              <div className="chart-legend">
-                <span>
-                  <i className="blue-dot"></i>درخواست بار
-                </span>
-                <span>
-                  <i className="teal-dot"></i>ناوگان
-                </span>
-              </div>
-            </div>
-            <svg
-              viewBox="0 0 760 174"
-              className="activity-chart"
-              aria-label="نمودار نمایشی فعالیت بار و ناوگان"
-              role="img"
-            >
-              <defs>
-                <lineargradient id="chart-fill" x1="0" x2="0" y1="0" y2="1">
-                  <stop stopColor="#1D4ED8" stopOpacity=".1"></stop>
-                  <stop offset="1" stopColor="#1D4ED8" stopOpacity="0"></stop>
-                </lineargradient>
-              </defs>
-              <g stroke="#E2E8F0" strokeDasharray="3 5">
-                <path d="M0 30H760M0 75H760M0 120H760M0 165H760"></path>
-              </g>
-              <path
-                d="M0 130C30 130 40 96 75 104S122 151 166 117S211 49 254 64S298 105 340 84S395 33 433 52S492 98 535 68S575 47 621 34S698 60 760 15V174H0Z"
-                fill="url(#chart-fill)"
-              ></path>
-              <path
-                className="cargo-line"
-                d="M0 130C30 130 40 96 75 104S122 151 166 117S211 49 254 64S298 105 340 84S395 33 433 52S492 98 535 68S575 47 621 34S698 60 760 15"
-                fill="none"
-                stroke="#1D4ED8"
-                strokeWidth="2.5"
-              ></path>
-              <path
-                className="drivers-line"
-                d="M0 150C38 151 55 118 95 134S147 110 190 123S239 105 282 116S337 96 383 103S422 74 469 87S517 61 564 78S613 58 660 70S716 44 760 53"
-                fill="none"
-                stroke="#0F766E"
-                strokeWidth="2"
-                strokeDasharray="5 4"
-              ></path>
-            </svg>
-            <div className="chart-axis">
-              <span>ابتدای بازه</span>
-              <span>میانهٔ بازه</span>
-              <span>انتهای بازه</span>
-            </div>
-          </div>
-          <div className="metric-strip">
-            <div className="metric" data-category="cargo">
-              <span className="metric-label">در حال بارگیری</span>
-              <strong>
-                ۳۶<span>بار</span>
-              </strong>
-              <span className="mini-bars" aria-hidden="true">
-                <i></i>
-                <i></i>
-                <i></i>
-                <i></i>
-                <i></i>
-                <i></i>
-                <i></i>
-              </span>
-            </div>
-            <div className="metric" data-category="drivers">
-              <span className="metric-label">رانندگان خالی</span>
-              <strong>
-                ۲۱۴<span>راننده</span>
-              </strong>
-              <span className="metric-line blue"></span>
-            </div>
-            <div className="metric" data-category="drivers">
-              <span className="metric-label">رانندگان دارای بار</span>
-              <strong>
-                ۹۶<span>راننده</span>
-              </strong>
-              <span className="metric-line teal"></span>
-            </div>
-            <div className="metric" data-category="cargo">
-              <span className="metric-label">درخواست‌های حمل</span>
-              <strong>
-                ۸۴<span>درخواست</span>
-              </strong>
-              <span className="metric-spark" aria-hidden="true">
-                <svg viewBox="0 0 85 20">
-                  <path
-                    d="M1 17 14 12 24 14 36 5 50 9 61 4 73 6 84 1"
-                    fill="none"
-                    stroke="#1D4ED8"
-                    strokeWidth="1.5"
-                  ></path>
-                </svg>
-              </span>
-            </div>
-            <div className="metric" data-category="drivers">
-              <span className="metric-label">رانندگان فعال</span>
-              <strong>
-                ۳۱۰<span>راننده</span>
-              </strong>
-              <span className="metric-ratio">
-                <i></i>
-              </span>
-            </div>
-          </div>
-        </div>
-        <p className="module-note">
-          تمام اعداد و روندهای این بخش نمونه‌اند و موجودی واقعی یا دادهٔ لحظه‌ای
-          را نشان نمی‌دهند.
-        </p>
-      </div>
-    </section>
-  );
-}
-
 export function DriversSection({
   province,
   onProvinceChange,
@@ -521,7 +374,11 @@ export function DriversSection({
   mapState,
   sectionRef,
   onMapRetry,
+  status = "all",
+  onStatusChange,
 }) {
+  const regionalDrivers = driverDemoData(province.id).drivers.filter((driver) => vehicle === "all" || driver.type === vehicle);
+  const visibleDrivers = regionalDrivers.filter((driver) => status === "all" || driver.status === status);
   return (
     <section
       className="section drivers-section"
@@ -624,9 +481,9 @@ export function DriversSection({
               </div>
               <p>
                 <strong>
-                  {faNumber.format(driverDemoData(province.id).count)}
+                  {faNumber.format(visibleDrivers.length)}
                 </strong>{" "}
-                خودروی نمونه در این استان
+                خودروی نمونه مطابق فیلتر در این استان
               </p>
             </div>
             <div className="field vehicle-filter">
@@ -636,10 +493,14 @@ export function DriversSection({
                 <Icon name="chevron-down" />
               </div>
             </div>
+            <div className="province-stats" aria-live="polite"><span><strong>{faNumber.format(regionalDrivers.filter((driver) => driver.status === "ready").length)}</strong>آمادهٔ دریافت بار</span><span><strong>{faNumber.format(regionalDrivers.filter((driver) => driver.status === "busy").length)}</strong>مشغول / دارای بار</span></div>
+            <div className="field vehicle-filter"><label htmlFor="map-status">وضعیت ناوگان</label><div className="select-wrap"><select id="map-status" value={status} onChange={(event) => onStatusChange(event.target.value)}><option value="all">همهٔ وضعیت‌ها</option><option value="ready">آمادهٔ دریافت بار</option><option value="busy">مشغول / دارای بار</option></select><Icon name="chevron-down" /></div></div>
             <DriverList
               province={province}
               vehicle={vehicle}
               onVehicleChange={onVehicleChange}
+              status={status}
+              onReset={() => { onVehicleChange("all"); onStatusChange("all"); }}
             />
             <div className="province-panel-footer">
               <Icon name="info" />

@@ -1,51 +1,80 @@
-# Gomrok homepage
+# گمرک‌دات‌کام — نسخهٔ اصلاح‌شده
 
-React implementation of the Persian, right-to-left Gomrok homepage and its design-preview flows.
+فرانت‌اند فارسی و راست‌به‌چپ با React 19 و Vite 8. سورس اصلی، برند، تصاویر و جریان‌های سالم حفظ شده‌اند. رابط در دسکتاپ و موبایل قابل استفاده است؛ سرویس‌های واقعیِ ورود، AI، بازار، پرداخت و داوری هنوز متصل نیستند.
 
-## Run locally
+مخزن پروژه: [Gomrok/Gomrok-frontend](https://github.com/Gomrok/Gomrok-frontend).
 
-Requires Node.js 22.12 or newer.
+## اجرای سریع خروجی آماده
 
-```sh
-npm ci
-npm run dev
+Node.js نسخهٔ 22.12 یا بالاتر لازم است. بستهٔ تحویل پوشهٔ آمادهٔ `dist/` را دارد؛ برای دیدن آن نیازی به نصب بسته‌ها نیست:
+
+```powershell
+.\run-local.ps1 -Mode preview
 ```
 
-Vite prints the local URL. Create a production build with `npm run build`, or serve that build locally with `npm run preview`.
+سایت روی `http://127.0.0.1:5083/` باز می‌شود. اسکریپت سرور را فقط روی loopback اجرا می‌کند؛ این دستور انتشار عمومی یا استقرار production نیست.
 
-## Stack
+`run-local.ps1` مسیر واقعی پروژه را بررسی می‌کند، روی C اجرا را متوقف می‌کند و TEMP/TMP/TMPDIR، کش npm، Node و ابزارهای تست را در `.codex-work/` پروژه تنظیم می‌کند. در workspace فعلی، محل ذخیره‌سازی `K:\primum\gomrok panels\.codex-work` است. اگر از یک پوشهٔ دیگر اجرا می‌کنید، می‌توانید `-WorkspaceRoot` را صریح بدهید. نصب سراسری انجام نمی‌شود.
 
-- React 19 with JavaScript and JSX
-- Vite 8 for development and production builds
-- Native CSS, with the supplied brand styling and RTL layout
+## توسعه، Build و تست
 
-The Vite base path is relative so the production bundle can be hosted from a GitHub Pages project path. `data-figma` attributes on major frames and components retain recognizable names for a later design handoff.
-
-## Project layout
-
-```text
-src/
-  components/      shared dialog, icon, and mobile navigation components
-  data/            editable province boundary data
-  features/         quote, customs, market, AI-preview, and driver interactions
-  pages/            homepage and concept-flow pages
-  sections/         page structure and brand content
-  styles.css        supplied design styles
-public/assets/      supplied logo, photographs, icons, map, and source attribution
+```powershell
+.\run-local.ps1 -Mode dev
+.\run-local.ps1 -Mode build
+.\run-local.ps1 -Mode test
 ```
 
-The homepage includes the freight quote form, customs introduction, market preview, interactive province map, sample driver list, articles, and responsive navigation. The `?view=quote`, `?view=customs`, and `?view=chat` paths show the related preview flows.
+اگر وابستگی‌ها موجود نباشند، اسکریپت با `npm ci` و کش داخل پروژه نصب می‌کند. پس از تغییر سورس، برای به‌روز کردن خروجی آماده Mode build را اجرا کنید. برای پورت دیگر از `-Port 5084` استفاده کنید.
 
-## Data and integrations
+تست مرورگر از Chrome یا Edge از قبل نصب‌شده استفاده می‌کند و مرورگر جدیدی دانلود نمی‌کند. در صورت نیاز مسیر مرورگر را با `GOMROK_CHROME_PATH` تعیین کنید. گزارش HTML، JSON، تصویرها و traceهای تست داخل `.codex-work/qa/` workspace ذخیره می‌شوند. Windows: اسکریپت test سرور اختصاصی خود را مدیریت می‌کند و سرور موجود کاربر را متوقف نمی‌کند.
 
-This repository implements the design and local interaction states only. Rates, market figures, drivers, and assistant replies are labeled sample content. Forms do not submit data to a backend; preview values are stored in tab-scoped session storage rather than the URL. No authentication, database, live availability, tariff calculation, or AI service is connected.
+دستورهای استاندارد، بعد از تنظیم همین متغیرهای محیطی: `npm run dev`، `npm run build`، `npm test`، `npm run test:e2e` و `npm run serve:built`.
 
-The supplied Gomrok logo is preserved. Asset sources and licenses are documented in [`public/assets/sources/README.md`](public/assets/sources/README.md). The Vazirmatn font is loaded from Google Fonts for preview rendering; an internet connection is required to fetch it.
+## مسیرهای رابط
 
-## Build
+| مسیر | عملکرد فعلی |
+| --- | --- |
+| `./` | صفحهٔ اصلی، جستجوی محلی، فرم حمل، بازار و نقشه |
+| `?view=quote` | تکمیل و مرور درخواستِ انتخاب‌شده در همان تب |
+| `?edit=quote#quote` | اصلاح مسیر و حفظ اطلاعات قبلی |
+| `?view=customs` | پیش‌نمایش پروندهٔ ترخیص؛ بدون محاسبهٔ تعرفهٔ واقعی |
+| `?view=chat` | چت نمونه با سهمیهٔ مهمان |
+| `?view=login` | فرم ورود مشترک؛ adapter واقعی تنظیم نشده |
+| `?view=signup` | انتخاب نقش |
+| `?view=signup&role=shipper` | ثبت‌نام نمونهٔ صاحب کالا |
+| `?view=signup&role=carrier` | ثبت‌نام نمونهٔ شرکت حمل |
+| `?view=signup&role=broker` | ثبت‌نام نمونهٔ ترخیص‌کار |
+| `?view=signup&role=driver` | ثبت‌نام نمونهٔ راننده |
+| `?view=panel&role=...` | پنل عمومی و صریحاً نمایشی همان نقش |
 
-```sh
-npm ci
-npm run build
-npm run preview
-```
+## چه چیزهایی کار می‌کنند؟
+
+- نوار جستجوی مستقل زیر هدر برای نام کالا و HS با نرمال‌سازی فارسی/عربی و ارقام فارسی؛ نتیجهٔ خالی و ارتباط با معرفی کالا.
+- چهار شیوهٔ زمینی، دریایی، هوایی و ریلی؛ دامنهٔ صادرات/واردات/ترانزیت؛ نوع بار جستجودار و نام اختیاری مسیر.
+- مبدأ و مقصد ابتدا خالی؛ combobox با پیشنهاد زیر ورودی، کلیک، Enter، کلیدهای جهت و Escape؛ پاک شدن شهر پس از تغییر کشور و جابه‌جایی صحیح مسیر.
+- اعتبارسنجی، وزن فارسی، مرور مشخصات و نگه‌داری پیش‌نویس فقط در همان تب.
+- چهار وضعیت بازار، فیلتر بازه و وضعیت، نمودار و جدول قابل خواندن؛ همه با برچسب دادهٔ نمونه.
+- نقشهٔ واقعی ۳۱ استان، انتخاب طبیعی استان و فوکوس کیبورد روی مرز شکل، فیلتر نوع/وضعیت خودرو و شمارندهٔ هماهنگ با فهرست.
+- ترخیص بالاتر از دستیار AI؛ شماره‌ها و منوهای دسکتاپ/موبایل از ترتیب مشترک ساخته می‌شوند.
+- فرم ورود واحد، چهار جریان ثبت‌نام سه‌مرحله‌ای، مرور اطلاعات، اعتبارسنجی و بازگشت به مرحلهٔ قبل.
+- پنل‌های چهار نقش با پیش‌نویس، انتشار تمرینی، ثبت/پس‌گرفتن پیشنهاد، پذیرش و همکاری مشترک. تکمیل و تسویهٔ نمونه به تأیید هر دو نمای نقش نیاز دارند.
+- اعلان‌های داخلی، فیلتر خوانده‌نشده، پروفایل تمرینی و ترجیح نمایش شمارنده؛ پاک‌سازی سناریوهای تب بدون تغییر سهمیهٔ چت.
+- محدودیت قابل تنظیم چت، تاریخچهٔ قابل انتخاب/حذف، نگه‌داری اختیاری در همین تب و ارجاع صریح AI به درخواست.
+- راهنمای محلی انتخاب نوع بار با پذیرش صریح کاربر؛ سطح‌بندی نمونه با معیارها، وزن‌ها، سطوح قابل افزودن و سابقهٔ محاسبه.
+- مرکز اختلاف با پیش‌نویس، مدارک نمونه، نمای دو طرف، مشاهدهٔ ابلاغ تمرینی، پاسخ و ساعت سناریوی ۴۸ ساعت؛ بدون ابلاغ رسمی یا مجازات.
+- فونت Vazirmatn از فایل محلی همراه مجوز OFL بارگذاری می‌شود؛ نمایش به Google Fonts وابسته نیست.
+- فاصله‌های بین سکشن‌ها، عنوان‌ها و فوتر برای دسکتاپ، تبلت و موبایل کمتر و یکدست شده‌اند.
+
+## مرزهای فعلی
+
+طبق درخواست فعلی، این تحویل تکمیل فرانت‌اند است؛ اتصال واقعی سرویس‌ها برای مرحلهٔ بعد باقی مانده است. هیچ حساب معتبر، مجوز خصوصی، موجودی واقعی راننده، نرخ واقعی، پاسخ مدل زنده، پرداخت، کمیسیون وصول‌شده، رتبهٔ معتبر، ابلاغ یا رأی داوری ساخته نشده است. adapterهای خارجی با خطای روشن `NOT_CONFIGURED` پاسخ می‌دهند.
+
+رمز عبور و محتوای مدارک در storage ذخیره نمی‌شوند. شرح اختلاف، نام مدارک و پروفایل فقط در حافظهٔ صفحه‌اند؛ تغییر تب پنل و نمای نقش آن‌ها را حفظ می‌کند و بازخوانی کامل صفحه پاکشان می‌کند. پیش‌نویس درخواست، پیشنهاد، همکاری، اعلان‌های غیرمرتبط با اختلاف و شمارش سهمیه از sessionStorage همین تب استفاده می‌کنند. متن گفتگو فقط با انتخاب صریح گزینهٔ نگه‌داری تاریخچه در sessionStorage قرار می‌گیرد و با برداشتن تیک پاک می‌شود. از دادهٔ نمونه استفاده کنید؛ این محیط مرز امنیتی یا حساب خصوصی نیست.
+
+فهرست مکان‌های فرم نمونه است: ۵ کشور و ۱۴ شهر. دادهٔ جهانی، آستانه‌های رسمی لیگ، نرخ کارمزد، تعداد نهایی پنل‌ها و قرارداد سرویس‌ها نیاز به تصمیم بعدی دارند. بخش موجود «ترخیص کالا» به‌عنوان نزدیک‌ترین محتوای مرتبط با تعرفه بالاتر از AI قرار گرفته است؛ عنوان دقیق «اصطلاحات/تعرفه و تخفیف کالا» در سورس وجود نداشت. این انتخاب برگشت‌پذیر از `HOME_SECTION_ORDER` قابل تغییر است و بخش تازه یا تخفیف ساختگی تولید نشده است.
+
+جزئیات در [قراردادهای توسعه](docs/INTEGRATION_CONTRACTS.md)، [یادداشت تحویل](DELIVERY_NOTES.md) و [فایل‌های تغییرکرده](docs/CHANGED_FILES.md) آمده است.
+
+## دارایی‌ها و مجوزها
+
+لوگوی اصلی تغییر نکرده است. تصاویر، آیکن‌ها و دادهٔ مرز استان‌ها با انتساب و مجوزهای قبلی حفظ شده‌اند؛ جزئیات در [منابع دارایی‌ها](public/assets/sources/README.md). نقشه مرجع مرز حقوقی، موقعیت زنده یا موجودی تأییدشده نیست. کاتالوگ محلی HS منبع رسمی تعیین تعرفه محسوب نمی‌شود.
